@@ -42,7 +42,7 @@ public:
 
         if(it != potionNum.end())
         {
-            std::cout << " 물약 재고 : " << it->second << std::endl; 
+            std::cout << "물약 재고 : " << it->second << std::endl; 
         }
 
     }
@@ -101,7 +101,7 @@ public:
         std::cout << "---------------------------\n";
     }
 
-     void searchPotionIngredients(std::string name_) const
+    void searchPotionIngredients(std::string name_) const
     {
         std::cout << std::endl;
         std::cout << "검색한 재료 이름: " << name_ << std::endl;
@@ -120,8 +120,34 @@ public:
        std::cout << "---------------------------\n";
     }
 
+    void givePotion(std::string name_) 
+    {
+        if(potionNum[name_] >=1)
+        {
+            std::cout << "모험가에게 " << name_ << " 물약 한 개를 주었습니다\n";
+            potionNum[name_]--;
+        }
+        else
+        {
+            std::cout << "해당 포션은 재고가 부족합니다 !\n";
+        }
 
+        displayPotionNum(name_);
+    }
 
+    void returnPotion(std::string name)
+    {
+        if(potionNum[name] == giveInitial)
+        {
+            std::cout << "해당 물약은 최대의 재고인  " << giveInitial << " 에 도달했습니다." << std::endl; 
+            return;
+        }
+        else
+        {
+            potionNum[name]++;
+            displayPotionNum(name);
+        }
+    }
 };
 
 int main() {
@@ -135,7 +161,9 @@ int main() {
         std::cout << "2. 모든 레시피 출력" << std::endl;
         std::cout << "3. 레시피 이름으로 검색" << std::endl;
         std::cout << "4. 레시피 재료로 검색" << std::endl;
-        std::cout << "5. 종료" << std::endl; 
+        std::cout << "5. 포션 모험가에게 주기" << std::endl;
+        std::cout << "6. 포션 반납받기" << std::endl;
+        std::cout << "7. 종료" << std::endl; 
         std::cout << "선택: ";
 
         int choice;
@@ -179,6 +207,7 @@ int main() {
 
         } else if (choice == 2) {
             myWorkshop.displayAllRecipes();
+            std::cout << std::endl;
 
         } else if (choice ==3)
         {
@@ -188,6 +217,7 @@ int main() {
             std::getline(std::cin, name);
 
             myWorkshop.searchPotionName(name);
+            std::cout << std::endl;
 
         }else if (choice ==4)
         {
@@ -196,8 +226,31 @@ int main() {
            std::cin.ignore(10000, '\n');
            std::getline(std::cin, name);
            myWorkshop.searchPotionIngredients(name);
+           std::cout << std::endl;
 
-        } else if (choice == 5) {
+        }else if (choice == 5)
+        {
+            std::string name;
+            std::cout << "물약 이름: ";
+            std::cin.ignore(10000, '\n');
+            std::getline(std::cin, name);
+
+            myWorkshop.givePotion(name);
+            std::cout << std::endl;
+
+        }
+
+        else if (choice == 6)
+        {
+            std::string name;
+            std::cout << "물약 이름: ";
+            std::cin.ignore(10000, '\n');
+            std::getline(std::cin, name);
+
+            myWorkshop.returnPotion(name);
+        }
+        
+        else if (choice == 7) {
             std::cout << "공방 문을 닫습니다..." << std::endl;
             break;
 
