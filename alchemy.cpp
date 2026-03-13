@@ -15,40 +15,23 @@ public:
         : potionName(name), ingredients(ingredients) {}
 };
 
-// AlchemyWorkshop 클래스: 레시피 목록을 관리
-class AlchemyWorkshop {
+
+class RecipeManager
+{
 private:
     std::vector<PotionRecipe> recipes;
 
-    //Map을 통해서 물약 갯수를 관리
-    std::map<std::string, int> potionNum;
-
-    //레시피 생성시 기본 포션 지급 갯수
-    int giveInitial = 4;
 
 public:
-    // addRecipe 메서드: 재료 목록(vector)을 매개변수로 받도록 수정
-    void addRecipe(const std::string& name, const std::vector<std::string>& ingredients) {
+     void addRecipe(const std::string& name, const std::vector<std::string>& ingredients) {
         recipes.push_back(PotionRecipe(name, ingredients));
         std::cout << ">> 새로운 레시피 '" << name << "'이(가) 추가되었습니다." << std::endl;
-        potionNum[name] = giveInitial;
 
     }
 
-    void displayPotionNum(const std::string& name) const
-    {
-        //읽기만 가능한 iterator
-        std::map<std::string,int>::const_iterator it = potionNum.find(name);
 
-        if(it != potionNum.end())
-        {
-            std::cout << "물약 재고 : " << it->second << std::endl; 
-        }
 
-    }
-
-    // 모든 레시피 출력 메서드
-    void displayAllRecipes() const {
+     void displayAllRecipes() const {
         if (recipes.empty()) {
             std::cout << "아직 등록된 레시피가 없습니다." << std::endl;
             return;
@@ -72,34 +55,6 @@ public:
         std::cout << "---------------------------\n";
     }
 
-    // 물약 검색 메서드 
-    void searchPotionName(std::string name_) const 
-    {
-        for(auto v : recipes)
-        {
-            if(name_ == v.potionName)
-            {
-                std::cout << std::endl;
-                std::cout << " 검색한 물약 이름: " << v.potionName << std::endl;
-                std::cout << "  > 필요 재료: ";
-                for (size_t j = 0; j <v.ingredients.size(); ++j) {
-                    std::cout << v.ingredients[j];
-                    // 마지막 재료가 아니면 쉼표로 구분
-                    if (j < v.ingredients.size() - 1) {
-                    std::cout << ", ";
-                    }
-                }
-
-                std::cout << std::endl;
-
-                displayPotionNum(name_);
-          
-            }
-
-        
-        }
-        std::cout << "---------------------------\n";
-    }
 
     void searchPotionIngredients(std::string name_) const
     {
@@ -120,33 +75,138 @@ public:
        std::cout << "---------------------------\n";
     }
 
-    void givePotion(std::string name_) 
-    {
-        if(potionNum[name_] >=1)
-        {
-            std::cout << "모험가에게 " << name_ << " 물약 한 개를 주었습니다\n";
-            potionNum[name_]--;
-        }
-        else
-        {
-            std::cout << "해당 포션은 재고가 부족합니다 !\n";
-        }
 
-        displayPotionNum(name_);
+    void searchPotionName(std::string name_) const 
+    {
+        for(auto v : recipes)
+        {
+            if(name_ == v.potionName)
+            {
+                std::cout << std::endl;
+                std::cout << " 검색한 물약 이름: " << v.potionName << std::endl;
+                std::cout << "  > 필요 재료: ";
+                for (size_t j = 0; j <v.ingredients.size(); ++j) {
+                    std::cout << v.ingredients[j];
+                    // 마지막 재료가 아니면 쉼표로 구분
+                    if (j < v.ingredients.size() - 1) {
+                    std::cout << ", ";
+                    }
+                }
+
+                std::cout << std::endl;
+
+          
+            }
+
+        
+        }
+        std::cout << "---------------------------\n";
     }
 
-    void returnPotion(std::string name)
+
+
+
+};
+
+
+class StockManager
+{
+private:
+    std::map<std::string,int> stock;
+    int initialStockVal = 3;
+
+public:
+    void InitialStock(const std::string& name)
     {
-        if(potionNum[name] == giveInitial)
+        stock[name] = 3;
+    }
+
+    void PrintStock(const std::string& name) const
+    {
+        std::map<std::string,int>::const_iterator it = stock.find(name);
+        
+        if(it != stock.end())
         {
-            std::cout << "해당 물약은 최대의 재고인  " << giveInitial << " 에 도달했습니다." << std::endl; 
+            std::cout << "남은 재고 :" <<  it->second << std::endl;
+        }
+    }
+
+
+    void ReturnPotion(const std::string& name)
+    {
+        if(stock[name] == 3)
+        {
+            std::cout << "해당 물약은 최대의 재고인 : " << initialStockVal << "에 도달했습니다." << std::endl;
             return;
         }
         else
         {
-            potionNum[name]++;
-            displayPotionNum(name);
+            addPotionVal(name, 1);
+            std::cout << "모험가로부터 1개의 물약을 돌려받았습니다." << std::endl;
+            PrintStock(name); 
         }
+    }
+
+    void givePotion(const std::string& name)
+    {
+        if(stock[name] >= 1)
+        {
+            addPotionVal(name, -1);
+        }
+        else
+        {
+            std::cout << "남은 재고가 없어서 모험가에게 물약을 줄 수 없습니다. " << std::endl;
+        }
+    }
+
+
+    void addPotionVal(const std::string& name, int amount)
+    {
+        stock[name] += amount;
+    }
+
+};
+
+// AlchemyWorkshop 클래스: 레시피 목록을 관리
+class AlchemyWorkshop {
+private:
+    RecipeManager recipemanager;
+    StockManager stockmanager;
+
+
+
+public:
+    // addRecipe 메서드: 재료 목록(vector)을 매개변수로 받도록 수정
+    void addRecipe(const std::string& name, const std::vector<std::string>& ingredients) {
+        recipemanager.addRecipe(name,ingredients);
+        stockmanager.InitialStock(name);
+    }
+
+    // 모든 레시피 출력 메서드
+    void displayAllRecipes() const {
+        recipemanager.displayAllRecipes();
+    }
+
+    // 물약 검색 메서드 
+    void searchPotionName(std::string name_) const 
+    {
+        recipemanager.searchPotionName(name_);
+    }
+
+    void searchPotionIngredients(std::string name_) const
+    {
+        recipemanager.searchPotionIngredients(name_);
+        
+    }
+
+    void givePotion(std::string name_) 
+    {
+        stockmanager.givePotion(name_);
+    }
+
+    void returnPotion(std::string name_)
+    {
+        stockmanager.ReturnPotion(name_);
     }
 };
 
