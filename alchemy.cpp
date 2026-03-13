@@ -24,7 +24,7 @@ private:
     std::map<std::string, int> potionNum;
 
     //레시피 생성시 기본 포션 지급 갯수
-    int giveInitial = 3;
+    int giveInitial = 4;
 
 public:
     // addRecipe 메서드: 재료 목록(vector)을 매개변수로 받도록 수정
