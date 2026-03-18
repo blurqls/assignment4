@@ -1,43 +1,26 @@
-# Prerequisites
-*.d
+## [ Visual Studio 프로젝트 및 솔루션 파일 제외 ]
+*.sln
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
+## [ 빌드 결과물 및 중간 파일 제외 ]
+.vs/
+out/
+x64/
+x86/
+Debug/
+Release/
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
 *.pdb
+*.ilk
+*.log
+*.tlog
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+## [ 기타 캐시 파일 ]
+*.VC.db
+*.VC.opendb
 
-# Fortran module files
-*.mod
-*.smod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
-
-*.vscode/
+*.vscode
